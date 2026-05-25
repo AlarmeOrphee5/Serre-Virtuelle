@@ -1,0 +1,4 @@
+.qtc_clangd/
+build/
+windeployqt.bat
+*.pro.user
