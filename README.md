@@ -42,3 +42,6 @@ Layouts dynamiques Qt
 Stylesheets Qt (QSS)
 
 Je développe ce projet plus pour le plaisir que par necessité.
+Une image du logiciel :
+<img width="1394" height="925" alt="image" src="https://github.com/user-attachments/assets/4c556b67-ba28-4d96-89b5-f10dfd7fcfcd" />
+
