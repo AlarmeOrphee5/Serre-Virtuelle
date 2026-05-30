@@ -183,7 +183,8 @@ void TableCulture::setupGrid(QVBoxLayout* mainLayout)
         PotWidget* pot = new PotWidget(i + 1, EtatPot::Inactif);
         pot->setEnabled(false);
         m_pots.append(pot);
-        m_gridLayout->addWidget(pot, i / 6, i % 6);
+        //m_gridLayout->addWidget(pot, i / 6, i % 6);
+        m_gridLayout->addWidget(pot, i / 4, i % 4);
     }
 
     gridBoxLayout->addLayout(m_gridLayout);

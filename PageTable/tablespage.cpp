@@ -156,7 +156,7 @@ void TablesPage::refreshGrid()
             QPushButton:hover { border:2px solid white; }
         )").arg(colorFromEtat(pots[i]->etat())));
         potBtn->setToolTip(pots[i]->toString());
-        m_potGrid->addWidget(potBtn, i / 6, (i % 6) + 1);
+        m_potGrid->addWidget(potBtn, i / 4, (i % 4) + 1);
     }
 }
 
