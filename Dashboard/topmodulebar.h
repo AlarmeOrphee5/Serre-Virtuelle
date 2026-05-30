@@ -4,6 +4,12 @@
 
 #include <QFrame>
 #include <QVector>
+#include <QNetworkAccessManager>
+#include <QNetworkReply>
+#include <QNetworkRequest>
+
+#include <QJsonDocument>
+#include <QJsonObject>
 
 class ModuleCard;
 
@@ -26,4 +32,8 @@ private:
     void addModule(const ModuleInfo& info);
 
     QVector<ModuleCard*> m_cards;
+
+    //gestion météo cadre
+    QNetworkAccessManager m_networkManager;
+    void recupererMeteo();
 };

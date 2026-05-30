@@ -43,7 +43,7 @@ INCLUDEPATH += Dashboard \
                PageTable \
                Shared
 
-FORMS +=
+QT += network
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin

@@ -21,7 +21,7 @@ enum class EtatPot
     Semis,
     Croissance,
     Repiquage,
-    Stress,
+    Malade,
     Hydrate,
     Actif,
     HorsService
@@ -35,7 +35,7 @@ inline QString colorFromEtat(EtatPot etat)
     case EtatPot::Semis:        return "#f1c40f";//1
     case EtatPot::Croissance:   return "#7be082";//2
     case EtatPot::Repiquage:    return "#e67e22";//3
-    case EtatPot::Stress:       return "#e74c3c";//4
+    case EtatPot::Malade:       return "#e74c3c";//4
     case EtatPot::Hydrate:      return "#3498db";//5
     case EtatPot::Actif:        return "#5fbf66";//6
     case EtatPot::HorsService:  return "#000000";//7
@@ -51,7 +51,7 @@ inline QString labelFromEtat(EtatPot etat)
     case EtatPot::Semis:        return "Semis";
     case EtatPot::Croissance:   return "Croissance";
     case EtatPot::Repiquage:    return "Repiquage";
-    case EtatPot::Stress:       return "Stress";
+    case EtatPot::Malade:       return "Malade";
     case EtatPot::Hydrate:      return "Hydraté";
     case EtatPot::Actif:        return "Actif";
     case EtatPot::HorsService:  return "Hors service";
@@ -66,7 +66,7 @@ inline QList<EtatPot> tousLesEtats()
         EtatPot::Semis,
         EtatPot::Croissance,
         EtatPot::Repiquage,
-        EtatPot::Stress,
+        EtatPot::Malade,
         EtatPot::Hydrate,
         EtatPot::Actif,
         EtatPot::HorsService
@@ -79,7 +79,7 @@ inline EtatPot etatFromColor(const QString& color)
     if (color == "#f1c40f") return EtatPot::Semis;
     if (color == "#7be082") return EtatPot::Croissance;
     if (color == "#e67e22") return EtatPot::Repiquage;
-    if (color == "#e74c3c") return EtatPot::Stress;
+    if (color == "#e74c3c") return EtatPot::Malade;
     if (color == "#3498db") return EtatPot::Hydrate;
     if (color == "#5fbf66") return EtatPot::Actif;
     if (color == "#000000") return EtatPot::HorsService;

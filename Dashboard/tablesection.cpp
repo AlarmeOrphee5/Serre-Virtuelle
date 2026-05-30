@@ -96,7 +96,7 @@ void TableSection::setupScroll(QVBoxLayout* layout)
 
     for (int i = 1; i <= 7; i++)
     {
-        TableCulture* table = new TableCulture("Table A" + QString::number(i));
+        TableCulture* table = new TableCulture("Alvéole A" + QString::number(i));
 
         m_tables.append(table);
 
