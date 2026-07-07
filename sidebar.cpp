@@ -91,7 +91,7 @@ void SideBar::setupNav(QVBoxLayout* layout)
 
 void SideBar::setupVersion(QVBoxLayout* layout)
 {
-    QLabel* version = new QLabel("V0.1.27\nPreview\nSuceptible d'être modifié");
+    QLabel* version = new QLabel("V0.1.34.2\nPreview\nSuceptible d'être modifié");
     version->setAlignment(Qt::AlignCenter);
     version->setStyleSheet("color:#5c6370; font-size:11px; padding-top:8px; background:transparent;");
     layout->addWidget(version);

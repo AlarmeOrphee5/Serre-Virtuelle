@@ -9,6 +9,10 @@
 #include <QLabel>
 #include <QFrame>
 #include <QRandomGenerator>
+#include <QTimer>
+
+constexpr int nombreTablesInitiales = 7;
+constexpr int nombreColonnes = 4;
 
 TableSection::TableSection(QWidget* parent)
     : QWidget(parent)
@@ -94,7 +98,7 @@ void TableSection::setupScroll(QVBoxLayout* layout)
     m_tablesGrid = new QGridLayout;
     m_tablesGrid->setSpacing(15);
 
-    for (int i = 1; i <= 7; i++)
+    for (int i = 1; i <= nombreTablesInitiales; i++)
     {
         TableCulture* table = new TableCulture("Alvéole A" + QString::number(i));
 
@@ -111,23 +115,25 @@ void TableSection::setupScroll(QVBoxLayout* layout)
         bool r = QRandomGenerator::global()->bounded(2);
         table->setEnabled(r);
 
-        m_tablesGrid->addWidget(table, (i - 1) / 3, (i - 1) % 3);
+        m_tablesGrid->addWidget(table,(i - 1) / nombreColonnes,(i - 1) % nombreColonnes,Qt::AlignCenter);
     }
     m_nextTableIndex = m_tables.size() + 1; // démarre à 8 si tu crées 7 tables
 
     QFrame* gridWrap = new QFrame;
+    gridWrap->setSizePolicy(
+        QSizePolicy::Preferred,
+        QSizePolicy::Preferred
+        );
     gridWrap->setFrameShape(QFrame::NoFrame);
     gridWrap->setAttribute(Qt::WA_NoSystemBackground, true);
     gridWrap->setStyleSheet("background:transparent;");
 
     QHBoxLayout* wrapLayout = new QHBoxLayout(gridWrap);
     wrapLayout->setContentsMargins(0,0,0,0);
-    wrapLayout->addStretch();
+    wrapLayout->setAlignment(Qt::AlignCenter);
     wrapLayout->addLayout(m_tablesGrid);
-    wrapLayout->addStretch();
 
-    containerLayout->addWidget(gridWrap);
-
+    containerLayout->addWidget(gridWrap, 0, Qt::AlignHCenter);
     scroll->setWidget(container);
     layout->addWidget(scroll);
 }
@@ -153,7 +159,7 @@ void TableSection::deleteTable(TableCulture* table)
 
     // Remettre à jour les positions dans la grille
     for (int i = 0; i < m_tables.size(); i++)
-        m_tablesGrid->addWidget(m_tables[i], i / 3, i % 3);
+        m_tablesGrid->addWidget(m_tables[i], i / nombreColonnes, i % nombreColonnes);
 
     // Mettre à jour les compteurs
     onTableEtatChanged();
@@ -173,7 +179,15 @@ void TableSection::addTable(TableCulture* source)
     table->updateStyle(); // ← recalcule le compteur avec les vrais états
     m_tables.append(table);
     int index = m_tables.size() - 1;
-    m_tablesGrid->addWidget(table, index / 3, index % 3);
+    table->setVisible(false);
+    m_tablesGrid->addWidget(table, index / nombreColonnes, index % nombreColonnes);
+    QTimer::singleShot(0, this, [this, table]()
+                       {
+                           m_tablesGrid->invalidate();
+                           m_tablesGrid->activate();
+                           table->setVisible(true);
+                       });
+
     connect(table, &TableCulture::etatChanged,
             this,  &TableSection::onTableEtatChanged);
     connect(table, &TableCulture::tableClicked,

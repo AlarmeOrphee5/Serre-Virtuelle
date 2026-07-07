@@ -3,7 +3,6 @@
 #include <QVBoxLayout>
 #include <QHBoxLayout>
 #include <QGridLayout>
-#include <QPushButton>
 #include <QLabel>
 #include <QFrame>
 #include <QRandomGenerator>
@@ -86,16 +85,16 @@ void TableCulture::updateStyle()
         m_waterLabel->setVisible(false);
     }
 
-    int nombrePotActif = 0;
-    for (PotWidget* pot : std::as_const(m_pots))
-        if (pot->etat() != EtatPot::Inactif && pot->etat() != EtatPot::HorsService)
-            nombrePotActif++;
+    int nombrePotActif = nombrePotsActifs();
 
     m_potsLabel->setText(QString::number(nombrePotActif) + "/" + QString::number(m_nombrePot) + " pots");
 }
 
 void TableCulture::setupUi()
 {
+    setMinimumSize(155, 252);
+    setMaximumWidth(155);
+    setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Preferred);
     setAttribute(Qt::WA_StyledBackground, true);
     setStyleSheet("TableCulture { background: transparent; border: none; }");
 
@@ -104,12 +103,18 @@ void TableCulture::setupUi()
     outerLayout->setSpacing(0);
 
     m_card = new QWidget(this);
+    m_card->setSizePolicy(
+        QSizePolicy::Fixed,
+        QSizePolicy::Preferred
+        );
+    m_card->setFixedWidth(155);
     m_card->setAttribute(Qt::WA_StyledBackground, true);
     m_card->setObjectName("TableCard");
 
     QVBoxLayout* mainLayout = new QVBoxLayout(m_card);
-    mainLayout->setContentsMargins(14, 14, 14, 14);
+    mainLayout->setContentsMargins(14,14,14,14);
     mainLayout->setSpacing(10);
+    mainLayout->setAlignment(Qt::AlignCenter);
 
     outerLayout->addWidget(m_card);
 
@@ -125,8 +130,9 @@ void TableCulture::setupHeader(QVBoxLayout* mainLayout)
     QFrame* header = new QFrame;
     header->setStyleSheet("background:transparent; border:none;");
 
-    QHBoxLayout* headerLayout = new QHBoxLayout(header);
+    QVBoxLayout* headerLayout = new QVBoxLayout(header);
     headerLayout->setContentsMargins(0,0,0,0);
+    headerLayout->setSpacing(4);
 
     QLabel* title = new QLabel(m_name);
     title->setAttribute(Qt::WA_OpaquePaintEvent, false);
@@ -151,18 +157,17 @@ void TableCulture::setupHeader(QVBoxLayout* mainLayout)
     statusLayout->addWidget(m_statusDot);
     statusLayout->addWidget(m_statusLabel);
 
-    headerLayout->addWidget(title);
-    headerLayout->addStretch();
-    headerLayout->addWidget(statusWidget);
+    headerLayout->addWidget(title, 0, Qt::AlignCenter);
+    headerLayout->addWidget(statusWidget, 0, Qt::AlignCenter);
 
     mainLayout->addWidget(header);
 }
 
 void TableCulture::setupGrid(QVBoxLayout* mainLayout)
 {
-    QWidget* gridBox = new QWidget;
-    gridBox->setAttribute(Qt::WA_StyledBackground, true);
+    QWidget* gridBox = new QWidget(m_card);
     gridBox->setObjectName("GridBox");
+    gridBox->setSizePolicy(QSizePolicy::Fixed,QSizePolicy::Fixed);
     gridBox->setStyleSheet(R"(
         QWidget#GridBox {
             background-color: #101827;
@@ -172,7 +177,7 @@ void TableCulture::setupGrid(QVBoxLayout* mainLayout)
     )");
 
     QVBoxLayout* gridBoxLayout = new QVBoxLayout(gridBox);
-    gridBoxLayout->setContentsMargins(8,8,8,8);
+    gridBoxLayout->setContentsMargins(8,8,8,8); // Marge intérieure entre la bordure et les pots
 
     m_gridLayout = new QGridLayout;
     m_gridLayout->setSpacing(6);
@@ -183,12 +188,12 @@ void TableCulture::setupGrid(QVBoxLayout* mainLayout)
         PotWidget* pot = new PotWidget(i + 1, EtatPot::Inactif);
         pot->setEnabled(false);
         m_pots.append(pot);
-        //m_gridLayout->addWidget(pot, i / 6, i % 6);
         m_gridLayout->addWidget(pot, i / 4, i % 4);
     }
 
     gridBoxLayout->addLayout(m_gridLayout);
-    mainLayout->addWidget(gridBox);
+
+    mainLayout->addWidget(gridBox, 0, Qt::AlignCenter);
 }
 
 void TableCulture::setupFooter(QVBoxLayout* mainLayout)
@@ -197,8 +202,9 @@ void TableCulture::setupFooter(QVBoxLayout* mainLayout)
     footer->setAttribute(Qt::WA_StyledBackground, true);
     footer->setStyleSheet("background:transparent; border:none;");
 
-    QHBoxLayout* footerLayout = new QHBoxLayout(footer);
+    QVBoxLayout* footerLayout = new QVBoxLayout(footer);
     footerLayout->setContentsMargins(0,0,0,0);
+    footerLayout->setSpacing(4);
 
     m_potsLabel = new QLabel("0/" + QString::number(m_nombrePot) + " pots");
     m_potsLabel->setAttribute(Qt::WA_OpaquePaintEvent, false);
@@ -210,9 +216,8 @@ void TableCulture::setupFooter(QVBoxLayout* mainLayout)
     m_waterLabel->setAttribute(Qt::WA_NoSystemBackground, true);
     m_waterLabel->setStyleSheet("color:#9aa4b2; font-size:11px; background:transparent; border:none;");
 
-    footerLayout->addWidget(m_potsLabel);
-    footerLayout->addStretch();
-    footerLayout->addWidget(m_waterLabel);
+    footerLayout->addWidget(m_potsLabel, 0, Qt::AlignCenter);
+    footerLayout->addWidget(m_waterLabel, 0, Qt::AlignCenter);
 
     mainLayout->addWidget(footer);
 }
