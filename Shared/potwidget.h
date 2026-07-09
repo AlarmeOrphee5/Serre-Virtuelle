@@ -5,6 +5,7 @@
 
 class PotWidget : public QPushButton
 {
+    Q_OBJECT
 public:
     explicit PotWidget(int numero, EtatPot etat = EtatPot::Inactif, QWidget* parent = nullptr);
 
@@ -21,6 +22,9 @@ public:
     void setDatePlantation(const QString& newDatePlantation);
 
     QString toString();
+
+signals:
+    void etatChanged();
 
 private:
     void updateStyle();

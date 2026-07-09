@@ -15,9 +15,15 @@ PotWidget::PotWidget(int numero, EtatPot etat, QWidget* parent)
 
 void PotWidget::setEtat(EtatPot etat)
 {
+    if (m_etat == etat)
+        return;
+
     m_etat = etat;
+
     updateStyle();
     updateTooltip();
+
+    emit etatChanged();
 }
 
 EtatPot PotWidget::etat() const

@@ -84,10 +84,7 @@ void TableCulture::updateStyle()
         m_statusLabel->setText("Inactif");
         m_waterLabel->setVisible(false);
     }
-
-    int nombrePotActif = nombrePotsActifs();
-
-    m_potsLabel->setText(QString::number(nombrePotActif) + "/" + QString::number(m_nombrePot) + " pots");
+    refreshPotCount();
 }
 
 void TableCulture::setupUi()
@@ -186,6 +183,8 @@ void TableCulture::setupGrid(QVBoxLayout* mainLayout)
     for (int i = 0; i < m_nombrePot; i++)
     {
         PotWidget* pot = new PotWidget(i + 1, EtatPot::Inactif);
+
+        connect(pot, &PotWidget::etatChanged,this, &TableCulture::refreshPotCount);
         pot->setEnabled(false);
         m_pots.append(pot);
         m_gridLayout->addWidget(pot, i / 4, i % 4);
@@ -194,6 +193,18 @@ void TableCulture::setupGrid(QVBoxLayout* mainLayout)
     gridBoxLayout->addLayout(m_gridLayout);
 
     mainLayout->addWidget(gridBox, 0, Qt::AlignCenter);
+}
+
+void TableCulture::refreshPotCount()
+{
+    int nombrePotActif = nombrePotsActifs();
+
+    m_potsLabel->setText(
+        QString::number(nombrePotActif)
+        + "/"
+        + QString::number(m_nombrePot)
+        + " pots utilisés"
+        );
 }
 
 void TableCulture::setupFooter(QVBoxLayout* mainLayout)

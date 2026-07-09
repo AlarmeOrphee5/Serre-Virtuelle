@@ -32,6 +32,9 @@ signals:
     void etatChanged();
     void tableClicked(TableCulture* self);
 
+private slots:
+    void refreshPotCount();
+
 protected:
     void mousePressEvent(QMouseEvent* e) override;
 

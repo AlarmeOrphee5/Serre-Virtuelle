@@ -61,9 +61,21 @@ TablesPage::TablesPage(QWidget* parent)
 // =========================
 // loadTable — point d'entrée
 // =========================
+/*void TablesPage::loadTable(TableCulture* table)
+{
+    clearPotSelection();
+    m_table = table;
+    refreshInfos();
+    refreshHeader();
+    refreshGrid();
+    refreshPotPanel();
+}*/
+
 void TablesPage::loadTable(TableCulture* table)
 {
     m_table = table;
+    m_currentPot = nullptr;
+
     refreshInfos();
     refreshHeader();
     refreshGrid();
@@ -108,7 +120,7 @@ void TablesPage::refreshHeader()
 
 }
 
-void TablesPage::refreshPotPanel()
+/*void TablesPage::refreshPotPanel()
 {
     if (!m_table) return;
 
@@ -120,6 +132,63 @@ void TablesPage::refreshPotPanel()
     if (m_potDetailPanel)
         m_potDetailPanel->setEnabled(enabled);
 
+}*/
+
+void TablesPage::refreshPotPanel()
+{
+    // Aucun pot sélectionné -> on cache le panneau
+    if (!m_currentPot || !m_table)
+    {
+        m_potDetailPanel->setVisible(false);
+        return;
+    }
+
+    m_potDetailPanel->setVisible(true);
+
+    // Activation / désactivation suivant l'état de la table
+    bool enabled = m_table->estActive();
+    m_potDetailPanel->setEnabled(enabled);
+
+    for (QPushButton* btn : std::as_const(m_etatButtons))
+    {
+        btn->setEnabled(enabled);
+        btn->setChecked(false);
+    }
+
+    // Remplissage des informations
+    m_potDetailNumero->setText(
+        "Détails du pot " + QString::number(m_currentPot->numeroPot()));
+
+    m_potDetailNom->setText(
+        m_currentPot->nomPlante().isEmpty()
+            ? "Vide"
+            : m_currentPot->nomPlante());
+
+    m_potDetailDate->setText(
+        m_currentPot->datePlantation().isEmpty()
+            ? "—"
+            : m_currentPot->datePlantation());
+
+    // Sélection du bon état
+    for (auto it = m_buttonToEtat.begin(); it != m_buttonToEtat.end(); ++it)
+    {
+        if (it.value() == m_currentPot->etat())
+        {
+            it.key()->setChecked(true);
+            break;
+        }
+    }
+}
+
+void TablesPage::clearPotSelection()
+{
+    m_currentPot = nullptr;
+
+    if (m_potDetailPanel)
+        m_potDetailPanel->setVisible(false);
+
+    for (QPushButton* btn : std::as_const(m_etatButtons))
+        btn->setChecked(false);
 }
 
 void TablesPage::refreshGrid()
@@ -702,7 +771,7 @@ void TablesPage::toggleTableState()
     refreshPotPanel();
 }
 
-void TablesPage::showPotDetail(PotWidget* pot)
+/*void TablesPage::showPotDetail(PotWidget* pot)
 {
     if (!pot || !m_potDetailPanel)
         return;
@@ -736,4 +805,13 @@ void TablesPage::showPotDetail(PotWidget* pot)
             break;
         }
     }
+}*/
+
+void TablesPage::showPotDetail(PotWidget* pot)
+{
+    if (!pot)
+        return;
+
+    m_currentPot = pot;
+    refreshPotPanel();
 }

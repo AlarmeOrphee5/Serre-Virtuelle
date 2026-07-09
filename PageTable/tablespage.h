@@ -44,6 +44,7 @@ private:
     void refreshHeader();
     void refreshGrid();
     void refreshInfos();
+    void clearPotSelection();
 
     TableCulture* m_table = nullptr; // table courante
 
