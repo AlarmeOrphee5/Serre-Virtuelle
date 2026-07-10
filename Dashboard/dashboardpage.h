@@ -26,6 +26,9 @@ public:
     TopModulesBar* topModulesBar();
     TableSection* tableSection();
 
+signals:
+    void exportSerreRequested();
+
 private:
     void setupHeader(QVBoxLayout* layout);
     void setupConnections();

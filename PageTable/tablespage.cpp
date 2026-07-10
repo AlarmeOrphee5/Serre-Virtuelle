@@ -1,6 +1,4 @@
 #include "tablespage.h"
-#include "tableculture.h"
-#include "potwidget.h"
 #include "couleurconversion.h"
 
 #include <QVBoxLayout>
@@ -61,17 +59,8 @@ TablesPage::TablesPage(QWidget* parent)
 // =========================
 // loadTable — point d'entrée
 // =========================
-/*void TablesPage::loadTable(TableCulture* table)
-{
-    clearPotSelection();
-    m_table = table;
-    refreshInfos();
-    refreshHeader();
-    refreshGrid();
-    refreshPotPanel();
-}*/
 
-void TablesPage::loadTable(TableCulture* table)
+void TablesPage::loadTable(TableCultureWidget *table)
 {
     m_table = table;
     m_currentPot = nullptr;
@@ -119,20 +108,6 @@ void TablesPage::refreshHeader()
     }
 
 }
-
-/*void TablesPage::refreshPotPanel()
-{
-    if (!m_table) return;
-
-    bool enabled = m_table->estActive();
-
-    for (QPushButton* btn : std::as_const(m_etatButtons))
-        btn->setEnabled(enabled);
-
-    if (m_potDetailPanel)
-        m_potDetailPanel->setEnabled(enabled);
-
-}*/
 
 void TablesPage::refreshPotPanel()
 {
@@ -193,26 +168,37 @@ void TablesPage::clearPotSelection()
 
 void TablesPage::refreshGrid()
 {
-    if (!m_table) return;
+    if (!m_table)
+        return;
 
     // Vider l'ancienne grille
     QLayoutItem* item;
     while ((item = m_potGrid->takeAt(0)) != nullptr)
     {
-        if (item->widget()) item->widget()->setParent(nullptr);
+        if (item->widget())
+            item->widget()->setParent(nullptr);
+
         delete item;
     }
 
-    // Pots réels de la table
-    const QVector<PotWidget*>& pots = m_table->pots();
+
+    const QVector<PotData>& pots = m_table->data().pots();
+
     for (int i = 0; i < pots.size() && i < 24; i++)
     {
-        // Créer un bouton d'affichage (lecture seule ici)
-        QPushButton* potBtn = new QPushButton(QString("%1").arg(i + 1, 2, 10, QChar('0')));
-        connect(potBtn, &QPushButton::clicked, this, [this, i]() {
-            showPotDetail(m_table->pots().at(i));
-        });
+        QPushButton* potBtn = new QPushButton(
+            QString("%1").arg(i + 1, 2, 10, QChar('0'))
+            );
+
+
+        connect(potBtn, &QPushButton::clicked, this, [this, i]()
+                {
+                    showPotDetail(i);
+                });
+
+
         potBtn->setFixedSize(44, 44);
+
         potBtn->setStyleSheet(QString(R"(
             QPushButton {
                 background:%1;
@@ -222,10 +208,21 @@ void TablesPage::refreshGrid()
                 font-size:10px;
                 font-weight:600;
             }
-            QPushButton:hover { border:2px solid white; }
-        )").arg(colorFromEtat(pots[i]->etat())));
-        potBtn->setToolTip(pots[i]->toString());
-        m_potGrid->addWidget(potBtn, i / 4, (i % 4) + 1);
+
+            QPushButton:hover {
+                border:2px solid white;
+            }
+        )")
+                                  .arg(colorFromEtat(pots[i].etat())));
+
+
+        potBtn->setToolTip(pots[i].toString());
+
+        m_potGrid->addWidget(
+            potBtn,
+            i / 4,
+            (i % 4) + 1
+            );
     }
 }
 
@@ -411,7 +408,6 @@ void TablesPage::setupBody(QVBoxLayout* layout)
     gchl->addWidget(makeLabel("24 pots (6x4)", "color:#5c6370; font-size:11px;"));
 
     //essaie non pertinant pour mettre a jour le nombre de pots via lz donnée stocké et non ecrite en dur.
-    //gchl->addWidget(makeLabel(m_infoPotsCount->text(),"color:#5c6370; font-size:11px;"));
     gchl->addStretch();
 
     QPushButton* modBtn = new QPushButton("✎  Modifier");
@@ -630,6 +626,7 @@ QLabel#valueLabel {
                 m_currentPot->setEtat(newEtat);
 
                 refreshGrid();
+                refreshPotPanel();
             });
 
     detailsLayout->addStretch();
@@ -726,13 +723,17 @@ QLabel#valueLabel {
     //actGrid->addWidget(makeActBtn("+",  "Ajouter des pots"),    0, 0);
     //actGrid->addWidget(makeActBtn("💧", "Planifier irrigation"), 0, 1);
     //actGrid->addWidget(makeActBtn("⧉",  "Dupliquer la table"),  1, 0);
-    actGrid->addWidget(makeActBtn("↓",  "Exporter les données - A venir"),1, 1);
+    QPushButton* exportBtn = makeActBtn("↓", "Exporter les données");
+    connect(exportBtn, &QPushButton::clicked,
+            this, &TablesPage::exportPDF);
+
+    actGrid->addWidget(exportBtn, 1, 1);
     actl->addLayout(actGrid);
 
     this->m_duplicateTableBtn = makeActBtn("⧉", "Dupliquer la table", true);
     QObject::connect(m_duplicateTableBtn, &QPushButton::clicked, m_duplicateTableBtn, [=](){
         qDebug() << QString("Bouton %1 appuyé").arg(m_duplicateTableBtn->text());
-        emit duplicateRequested(m_table);
+        emit duplicateRequested(&m_table->data());
         emit backRequested();
     });
     actl->addWidget(m_duplicateTableBtn);
@@ -771,47 +772,67 @@ void TablesPage::toggleTableState()
     refreshPotPanel();
 }
 
-/*void TablesPage::showPotDetail(PotWidget* pot)
+void TablesPage::showPotDetail(int index)
 {
-    if (!pot || !m_potDetailPanel)
+    if (!m_table)
         return;
 
-    m_currentPot = pot;
 
-    m_potDetailPanel->setVisible(true);
+    QVector<PotData>& pots = m_table->data().pots();
 
-    m_potDetailNumero->setText(
-        "Détails du pot " + QString::number(pot->numeroPot())
-        );
 
-    m_potDetailNom->setText(
-        pot->nomPlante().isEmpty() ? "Vide" : pot->nomPlante()
-        );
-
-    m_potDetailDate->setText(
-        pot->datePlantation().isEmpty() ? "—" : pot->datePlantation()
-        );
-
-    // reset sélection
-    for (auto b : m_etatButtons)
-        b->setChecked(false);
-
-    // activer bon bouton
-    for (auto it = m_buttonToEtat.begin(); it != m_buttonToEtat.end(); ++it)
-    {
-        if (it.value() == pot->etat())
-        {
-            it.key()->setChecked(true);
-            break;
-        }
-    }
-}*/
-
-void TablesPage::showPotDetail(PotWidget* pot)
-{
-    if (!pot)
+    if (index < 0 || index >= pots.size())
         return;
 
-    m_currentPot = pot;
+
+    m_currentPot = &pots[index];
+
     refreshPotPanel();
+}
+
+void TablesPage::exportPDF()
+{
+    if (!m_tablesData)
+    {
+        QMessageBox::warning(
+            this,
+            "Erreur",
+            "Aucune donnée disponible pour l'export."
+            );
+        return;
+    }
+
+
+    QString chemin = QFileDialog::getSaveFileName(
+        this,
+        "Exporter le rapport PDF",
+        "Rapport_Serre_Virtuelle.pdf",
+        "Fichier PDF (*.pdf)"
+        );
+
+
+    if (chemin.isEmpty())
+        return;
+
+
+    if (PdfExporter::exporterTable( m_table->data(),chemin))
+    {
+        QMessageBox::information(
+            this,
+            "Export terminé",
+            "Le rapport PDF a été créé."
+            );
+    }
+    else
+    {
+        QMessageBox::warning(
+            this,
+            "Erreur",
+            "Impossible de créer le PDF."
+            );
+    }
+}
+void TablesPage::setTablesData(QVector<TableCultureData*>* data)
+{
+    m_tablesData = data;
 }

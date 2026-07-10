@@ -54,8 +54,26 @@ RightPanel::RightPanel(QWidget* parent)
         emit ajouterTableClicked();
     });
 
+    QPushButton* ExportAllBtn = new QPushButton("Exporter la Serre");
+    ExportAllBtn->setStyleSheet(R"(
+    QPushButton {
+        background:#5fbf66;
+        color:white;
+        border:none;
+        border-radius:8px;
+        padding:10px;
+        font-weight:600;
+        font-size:12px;
+    }
+    QPushButton:hover { background:#7ed68a; }
+)");
+
+    connect(ExportAllBtn, &QPushButton::clicked,
+            this, &RightPanel::exportSerreRequested);
+
     gestionCard->innerLayout()->addWidget(gestionTitle);
     gestionCard->innerLayout()->addWidget(addBtn);
+    gestionCard->innerLayout()->addWidget(ExportAllBtn);
 
     layout->addWidget(gestionCard);
     layout->addStretch();

@@ -1,196 +1,401 @@
 #include "tablesection.h"
-#include "tableculture.h"
+
 #include "legendbar.h"
 
 #include <QVBoxLayout>
-#include <QHBoxLayout>
 #include <QGridLayout>
 #include <QScrollArea>
 #include <QLabel>
 #include <QFrame>
 #include <QRandomGenerator>
-#include <QTimer>
+
 
 constexpr int nombreTablesInitiales = 7;
 constexpr int nombreColonnes = 4;
 
+
+
 TableSection::TableSection(QWidget* parent)
     : QWidget(parent)
 {
+
     setAttribute(Qt::WA_StyledBackground, true);
+
     setObjectName("TableSection");
+
     setStyleSheet(R"(
         QWidget#TableSection {
-            background-color: #151922;
-            border-radius: 18px;
+            background-color:#151922;
+            border-radius:18px;
         }
     )");
 
+
     QVBoxLayout* layout = new QVBoxLayout(this);
+
     layout->setContentsMargins(16,16,16,16);
     layout->setSpacing(12);
+
 
     setupHeader(layout);
     setupScroll(layout);
     setupLegend(layout);
 }
 
+
+
 int TableSection::nombreTablesActives() const
 {
     int count = 0;
-    for (TableCulture* t : m_tables)
-        if (t->estActive()) count++;
+
+
+    for(const TableCultureData* table : m_tablesData)
+    {
+        if(table->estActive())
+            count++;
+    }
+
+
     return count;
 }
 
+
+
 int TableSection::nombreTables() const
 {
-    return m_tables.size();
+    return m_tablesData.size();
 }
+
+
 
 int TableSection::nombrePotsActifs() const
 {
     int count = 0;
-    for (TableCulture* t : m_tables)
-        count += t->nombrePotsActifs();
+
+
+    for(const TableCultureData* table : m_tablesData)
+    {
+        count += table->nombrePotsActifs();
+    }
+
+
     return count;
 }
+
+
 
 int TableSection::nombrePotsTotal() const
 {
     int count = 0;
-    for (TableCulture* t : m_tables)
-        count += t->nombrePots();
+
+
+    for(const TableCultureData* table : m_tablesData)
+    {
+        count += table->nombrePots();
+    }
+
+
     return count;
 }
 
+
+
+QVector<TableCultureData*>& TableSection::tablesData()
+{
+    return m_tablesData;
+}
+
+
+
 void TableSection::onTableEtatChanged()
 {
-    emit tablesActivesChanged(nombreTablesActives());
-    emit potsActifsChanged(nombrePotsActifs(), nombrePotsTotal());
+    emit tablesActivesChanged(
+        nombreTablesActives()
+        );
+
+
+    emit potsActifsChanged(
+        nombrePotsActifs(),
+        nombrePotsTotal()
+        );
 }
+
+
 
 void TableSection::setupHeader(QVBoxLayout* layout)
 {
-    QLabel* title = new QLabel("🌱 Tables de cultures");
-    title->setStyleSheet("color:white; font-size:18px; font-weight:600; background:transparent;");
+
+    QLabel* title = new QLabel(
+        "🌱 Tables de cultures"
+        );
+
+
+    title->setStyleSheet(
+        "color:white;"
+        "font-size:18px;"
+        "font-weight:600;"
+        "background:transparent;"
+        );
+
+
     layout->addWidget(title);
+
     layout->addSpacing(8);
 }
 
+
+
+
 void TableSection::setupScroll(QVBoxLayout* layout)
 {
+
     QScrollArea* scroll = new QScrollArea;
+
+
     scroll->setWidgetResizable(true);
+
     scroll->setFrameShape(QFrame::NoFrame);
-    scroll->setStyleSheet("border:none; background:transparent;");
-    scroll->viewport()->setStyleSheet("background:transparent;");
-    scroll->viewport()->setAttribute(Qt::WA_NoSystemBackground, true);
+
+    scroll->setStyleSheet(
+        "border:none;"
+        "background:transparent;"
+        );
+
 
     QWidget* container = new QWidget;
-    container->setAttribute(Qt::WA_NoSystemBackground, true);
-    container->setStyleSheet("background:transparent;");
 
-    QVBoxLayout* containerLayout = new QVBoxLayout(container);
-    containerLayout->setContentsMargins(5,5,5,5);
-    containerLayout->setSpacing(12);
+    container->setStyleSheet(
+        "background:transparent;"
+        );
+
+
+
+    QVBoxLayout* containerLayout =
+        new QVBoxLayout(container);
+
+
 
     m_tablesGrid = new QGridLayout;
+
     m_tablesGrid->setSpacing(15);
 
-    for (int i = 1; i <= nombreTablesInitiales; i++)
+
+
+    for(int i = 1; i <= nombreTablesInitiales; i++)
     {
-        TableCulture* table = new TableCulture("Alvéole A" + QString::number(i));
 
-        m_tables.append(table);
+        TableCultureData* data =
+            new TableCultureData(
+                "Alvéole A" + QString::number(i)
+                );
 
-        // Propagation état
-        connect(table, &TableCulture::etatChanged,
-                this,  &TableSection::onTableEtatChanged);
 
-        // Propagation clic ← nouveau
-        connect(table, &TableCulture::tableClicked,
-                this,  &TableSection::tableClicked);
+        // Données temporaires
+        bool active =
+            QRandomGenerator::global()->bounded(2);
 
-        bool r = QRandomGenerator::global()->bounded(2);
-        table->setEnabled(r);
 
-        m_tablesGrid->addWidget(table,(i - 1) / nombreColonnes,(i - 1) % nombreColonnes,Qt::AlignCenter);
+        data->setActive(active);
+
+
+
+        TableCultureWidget* widget =
+            new TableCultureWidget(*data);
+
+
+
+        m_tablesData.append(data);
+
+        m_tablesWidgets.append(widget);
+
+
+
+        connect(widget,
+                &TableCultureWidget::etatChanged,
+                this,
+                &TableSection::onTableEtatChanged);
+
+
+
+        connect(widget,
+                &TableCultureWidget::tableClicked,
+                this,
+                &TableSection::tableClicked);
+
+
+
+        int index = m_tablesWidgets.size()-1;
+
+
+        m_tablesGrid->addWidget(
+            widget,
+            index / nombreColonnes,
+            index % nombreColonnes,
+            Qt::AlignCenter
+            );
     }
-    m_nextTableIndex = m_tables.size() + 1; // démarre à 8 si tu crées 7 tables
 
-    QFrame* gridWrap = new QFrame;
-    gridWrap->setSizePolicy(
-        QSizePolicy::Preferred,
-        QSizePolicy::Preferred
+
+
+    m_nextTableIndex =
+        m_tablesData.size()+1;
+
+
+
+    QWidget* gridWrap = new QWidget;
+
+    gridWrap->setStyleSheet(
+        "background:transparent;"
         );
-    gridWrap->setFrameShape(QFrame::NoFrame);
-    gridWrap->setAttribute(Qt::WA_NoSystemBackground, true);
-    gridWrap->setStyleSheet("background:transparent;");
 
-    QHBoxLayout* wrapLayout = new QHBoxLayout(gridWrap);
-    wrapLayout->setContentsMargins(0,0,0,0);
-    wrapLayout->setAlignment(Qt::AlignCenter);
-    wrapLayout->addLayout(m_tablesGrid);
 
-    containerLayout->addWidget(gridWrap, 0, Qt::AlignHCenter);
+    QHBoxLayout* wrapLayout =
+        new QHBoxLayout(gridWrap);
+
+
+    wrapLayout->setContentsMargins(
+        0,0,0,0
+        );
+
+
+    wrapLayout->setAlignment(
+        Qt::AlignCenter
+        );
+
+
+    wrapLayout->addLayout(
+        m_tablesGrid
+        );
+
+
+
+    containerLayout->addWidget(
+        gridWrap
+        );
+
+
     scroll->setWidget(container);
+
+
     layout->addWidget(scroll);
 }
 
+
+
+
 void TableSection::setupLegend(QVBoxLayout* layout)
 {
-    layout->addWidget(new LegendBar);
+    layout->addWidget(
+        new LegendBar
+        );
 }
 
 
-void TableSection::deleteTable(TableCulture* table)
+
+
+void TableSection::deleteTable(TableCultureWidget* table)
 {
-    if (!table) return;
 
-    // Retirer du vecteur
-    m_tables.removeOne(table);
+    if(!table)
+        return;
 
-    // Retirer de la grille
+    int index =
+        m_tablesWidgets.indexOf(table);
+
+    if(index < 0)
+        return;
+
     m_tablesGrid->removeWidget(table);
 
-    // Détruire le widget
-    table->deleteLater();
+    m_tablesWidgets.removeAt(index);
 
-    // Remettre à jour les positions dans la grille
-    for (int i = 0; i < m_tables.size(); i++)
-        m_tablesGrid->addWidget(m_tables[i], i / nombreColonnes, i % nombreColonnes);
+    delete table;
 
-    // Mettre à jour les compteurs
+    delete m_tablesData[index];
+
+    m_tablesData.removeAt(index);
+
+    // Repositionnement
+    for(int i = 0; i < m_tablesWidgets.size(); i++)
+    {
+
+        m_tablesGrid->addWidget(
+            m_tablesWidgets[i],
+            i / nombreColonnes,
+            i % nombreColonnes,
+            Qt::AlignCenter
+            );
+    }
+
     onTableEtatChanged();
 }
 
-void TableSection::addTable(TableCulture* source)
+
+
+
+void TableSection::addTable(TableCultureData* source)
 {
-    TableCulture* table = new TableCulture("Table A" + QString::number(m_nextTableIndex++));
 
-    if (source != nullptr)
+    TableCultureData* data = nullptr;
+
+
+
+    if(source)
     {
-        table->setEnabled(source->estActive());
-
-        for (int i = 0; i < source->pots().size(); i++)
-            table->pots()[i]->setEtat(source->pots()[i]->etat());
+        data = new TableCultureData(
+            *source
+            );
     }
-    table->updateStyle(); // ← recalcule le compteur avec les vrais états
-    m_tables.append(table);
-    int index = m_tables.size() - 1;
-    table->setVisible(false);
-    m_tablesGrid->addWidget(table, index / nombreColonnes, index % nombreColonnes);
-    QTimer::singleShot(0, this, [this, table]()
-                       {
-                           m_tablesGrid->invalidate();
-                           m_tablesGrid->activate();
-                           table->setVisible(true);
-                       });
+    else
+    {
+        data =
+            new TableCultureData(
+                "Table A" +
+                QString::number(
+                    m_nextTableIndex++
+                    )
+                );
+    }
 
-    connect(table, &TableCulture::etatChanged,
-            this,  &TableSection::onTableEtatChanged);
-    connect(table, &TableCulture::tableClicked,
-            this,  &TableSection::tableClicked);
+
+
+    TableCultureWidget* widget =
+        new TableCultureWidget(*data);
+
+
+
+    m_tablesData.append(data);
+
+    m_tablesWidgets.append(widget);
+
+
+
+    connect(widget,
+            &TableCultureWidget::etatChanged,
+            this,
+            &TableSection::onTableEtatChanged);
+
+
+
+    connect(widget,
+            &TableCultureWidget::tableClicked,
+            this,
+            &TableSection::tableClicked);
+
+
+
+    int index =
+        m_tablesWidgets.size()-1;
+
+
+
+    m_tablesGrid->addWidget(
+        widget,
+        index / nombreColonnes,
+        index % nombreColonnes,
+        Qt::AlignCenter
+        );
+
+
     onTableEtatChanged();
 }

@@ -1,6 +1,6 @@
 #pragma once
 #include <QMainWindow>
-#include "tableculture.h"
+#include "tableculturewidget.h"
 
 class QStackedWidget;
 class TopModulesBar;
@@ -16,7 +16,8 @@ public:
 
 private slots:
     void onPageChanged(const QString& page);
-    void onTableClicked(TableCulture* table);
+    void onTableClicked(TableCultureWidget* table);
+    void exportSerre();
 
 private:
     QStackedWidget* m_stack;

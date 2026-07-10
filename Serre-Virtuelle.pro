@@ -1,4 +1,4 @@
-QT       += core gui
+QT += core gui widgets
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
@@ -12,8 +12,12 @@ SOURCES += \
     Dashboard/cardwidget.cpp \
     Dashboard/legendbar.cpp \
     Dashboard/dashboardpage.cpp \
+    Exporter/exportpdf.cpp \
     PageTable/tablespage.cpp \
+    Shared/potdata.cpp \
     Shared/tableculture.cpp \
+    Shared/tableculturedata.cpp \
+    Shared/tableculturewidget.cpp \
     main.cpp \
     mainwindow.cpp \
     Dashboard/modulecard.cpp \
@@ -25,11 +29,15 @@ SOURCES += \
 
 HEADERS += \
     Dashboard/cardwidget.h \
+    Exporter/exportpdf.h \
     PageTable/tablespage.h \
     Shared/couleurconversion.h \
     Dashboard/legendbar.h \
     Dashboard/dashboardpage.h \
+    Shared/potdata.h \
     Shared/tableculture.h \
+    Shared/tableculturedata.h \
+    Shared/tableculturewidget.h \
     mainwindow.h \
     Dashboard/modulecard.h \
     Dashboard/moduleinfo.h \

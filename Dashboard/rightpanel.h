@@ -21,4 +21,5 @@ public:
 
 signals:
     void ajouterTableClicked();
+    void exportSerreRequested();
 };

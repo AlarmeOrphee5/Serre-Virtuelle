@@ -4,7 +4,7 @@
 #include "tablespage.h"
 #include "tablesection.h"
 #include "topmodulebar.h"
-#include "tableculture.h"
+#include "tableculturewidget.h"
 
 #include <QWidget>
 #include <QHBoxLayout>
@@ -46,6 +46,10 @@ MainWindow::MainWindow(QWidget *parent)
     // TablesPage — créée une fois, rechargée via loadTable()
     m_tablesPage = new TablesPage;
     m_stack->addWidget(m_tablesPage); // index 1
+
+    m_tablesPage->setTablesData(
+        &m_tableSection->tablesData()
+    );
 
     m_stack->setCurrentIndex(0);
     root->addWidget(m_stack, 1);
@@ -102,6 +106,11 @@ MainWindow::MainWindow(QWidget *parent)
         QString::number(m_tableSection->nombrePotsActifs()),
         "sur " + QString::number(m_tableSection->nombrePotsTotal()) + " pots"
         );
+
+    connect(dashboard,
+            &DashboardPage::exportSerreRequested,
+            this,
+            &MainWindow::exportSerre);
 }
 
 void MainWindow::onPageChanged(const QString& page)
@@ -112,8 +121,43 @@ void MainWindow::onPageChanged(const QString& page)
     else if (page == "Settings")  m_stack->setCurrentIndex(3);
 }
 
-void MainWindow::onTableClicked(TableCulture* table)
+void MainWindow::onTableClicked(TableCultureWidget* table)
 {
     m_tablesPage->loadTable(table);
     m_stack->setCurrentIndex(1);
+}
+
+void MainWindow::exportSerre()
+{
+    QString fileName = QFileDialog::getSaveFileName(
+        this,
+        "Exporter la serre",
+        "Serre.pdf",
+        "Fichiers PDF (*.pdf)"
+        );
+
+    if (fileName.isEmpty())
+        return;
+
+    bool ok = PdfExporter::exporterSerre(
+        m_tableSection->tablesData(),
+        fileName
+        );
+
+    if (ok)
+    {
+        QMessageBox::information(
+            this,
+            "Export terminé",
+            "Le rapport de la serre a été exporté avec succès."
+            );
+    }
+    else
+    {
+        QMessageBox::critical(
+            this,
+            "Erreur",
+            "Impossible de générer le fichier PDF."
+            );
+    }
 }

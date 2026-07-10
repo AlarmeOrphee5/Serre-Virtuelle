@@ -95,6 +95,11 @@ void DashboardPage::setupConnections()
                 m_tableSection->addTable(nullptr);
             });
 
+    connect(m_rightPanel,
+            &RightPanel::exportSerreRequested,
+            this,
+            &DashboardPage::exportSerreRequested);
+
     m_topModulesBar->updateModule(
         0,
         QString::number(m_tableSection->nombreTablesActives()),

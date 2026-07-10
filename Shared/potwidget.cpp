@@ -1,9 +1,11 @@
 #include "potwidget.h"
 
-PotWidget::PotWidget(int numero, EtatPot etat, QWidget* parent)
+#include <QString>
+
+
+PotWidget::PotWidget(PotData& data, QWidget* parent)
     : QPushButton(parent),
-    m_numeroPot(numero),
-    m_etat(etat)
+    m_data(data)
 {
     setFixedSize(18, 18);
     setAttribute(Qt::WA_StyledBackground, true);
@@ -13,12 +15,33 @@ PotWidget::PotWidget(int numero, EtatPot etat, QWidget* parent)
     updateTooltip();
 }
 
+
+//--------------------------------------------------
+// Accès aux données
+//--------------------------------------------------
+
+PotData& PotWidget::data()
+{
+    return m_data;
+}
+
+
+const PotData& PotWidget::data() const
+{
+    return m_data;
+}
+
+
+//--------------------------------------------------
+// Etat du pot
+//--------------------------------------------------
+
 void PotWidget::setEtat(EtatPot etat)
 {
-    if (m_etat == etat)
+    if (m_data.etat() == etat)
         return;
 
-    m_etat = etat;
+    m_data.setEtat(etat);
 
     updateStyle();
     updateTooltip();
@@ -26,10 +49,70 @@ void PotWidget::setEtat(EtatPot etat)
     emit etatChanged();
 }
 
+
 EtatPot PotWidget::etat() const
 {
-    return m_etat;
+    return m_data.etat();
 }
+
+
+//--------------------------------------------------
+// Plante
+//--------------------------------------------------
+
+QString PotWidget::nomPlante() const
+{
+    return m_data.nomPlante();
+}
+
+
+void PotWidget::setNomPlante(const QString& newNomPlante)
+{
+    m_data.setNomPlante(newNomPlante);
+
+    updateTooltip();
+}
+
+
+//--------------------------------------------------
+// Date plantation
+//--------------------------------------------------
+
+QString PotWidget::datePlantation() const
+{
+    return m_data.datePlantation();
+}
+
+
+void PotWidget::setDatePlantation(const QString& newDatePlantation)
+{
+    m_data.setDatePlantation(newDatePlantation);
+
+    updateTooltip();
+}
+
+
+//--------------------------------------------------
+// Numéro du pot
+//--------------------------------------------------
+
+int PotWidget::numeroPot() const
+{
+    return m_data.numeroPot();
+}
+
+
+void PotWidget::setNumeroPot(int newNumeroPot)
+{
+    m_data.setNumeroPot(newNumeroPot);
+
+    updateTooltip();
+}
+
+
+//--------------------------------------------------
+// Affichage
+//--------------------------------------------------
 
 void PotWidget::updateStyle()
 {
@@ -43,69 +126,30 @@ void PotWidget::updateStyle()
     QPushButton:hover {
         border:1px solid white;
     }
-    )").arg(colorFromEtat(m_etat)));
+    )").arg(colorFromEtat(m_data.etat())));
 }
+
 
 void PotWidget::updateTooltip()
 {
-    setToolTip(toString());
-}
+    QString tooltip;
 
-QString PotWidget::nomPlante() const
-{
-    return m_nomPlante;
-}
+    tooltip += "Pot : " + QString::number(m_data.numeroPot());
 
-void PotWidget::setNomPlante(const QString& newNomPlante)
-{
-    m_nomPlante = newNomPlante;
-    updateTooltip();
-}
 
-int PotWidget::numeroPot() const
-{
-    return m_numeroPot;
-}
-
-void PotWidget::setNumeroPot(int newNumeroPot)
-{
-    m_numeroPot = newNumeroPot;
-    updateTooltip();
-}
-
-QString PotWidget::datePlantation() const
-{
-    return m_datePlantation;
-}
-
-void PotWidget::setDatePlantation(const QString& newDatePlantation)
-{
-    m_datePlantation = newDatePlantation;
-    updateTooltip();
-}
-
-QString PotWidget::toString()
-{
-    QList<EtatPot> etats = tousLesEtats();
-    if(m_etat == etats.at(0))
+    if (!m_data.nomPlante().isEmpty())
     {
-        return "Pot n°" + QString::number(m_numeroPot)
-               + " | " + (m_nomPlante.isEmpty() ? "Vide" : m_nomPlante)
-               + " | " + labelFromEtat(m_etat);
+        tooltip += "\nPlante : "
+                   + m_data.nomPlante();
     }
-    if(m_etat == etats.at(7))
+
+
+    if (!m_data.datePlantation().isEmpty())
     {
-        return "Pot n°" + QString::number(m_numeroPot)
-               + " | " + labelFromEtat(m_etat);
+        tooltip += "\nPlantation : "
+                   + m_data.datePlantation();
     }
-    if(m_nomPlante.isEmpty())
-    {
-        return "Pot n°" + QString::number(m_numeroPot)
-               + " | " + labelFromEtat(m_etat)
-               + " | " + (m_nomPlante.isEmpty() ? "Vide" : m_nomPlante);
-    }
-    return "Pot n°" + QString::number(m_numeroPot)
-           + " | " + (m_nomPlante.isEmpty() ? "Vide" : m_nomPlante)
-           + " | " + labelFromEtat(m_etat)
-           + " | Planté le : " + (m_datePlantation.isEmpty() ? "—" : m_datePlantation);
+
+
+    setToolTip(m_data.toString());
 }

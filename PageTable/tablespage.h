@@ -2,11 +2,16 @@
 
 #include <QWidget>
 #include <QPushButton>
-
-#include "potwidget.h"
 #include <QButtonGroup>
+#include "tableculturewidget.h"
+#include "potdata.h"
+#include "Exporter/exportpdf.h"
+#include "tableculturedata.h"
 
-class TableCulture;
+#include <QFileDialog>
+#include <QMessageBox>
+
+
 class QStackedWidget;
 class QVBoxLayout;
 class QLabel;
@@ -28,13 +33,16 @@ public:
     explicit TablesPage(QWidget* parent = nullptr);
 
     // Charge et affiche les données de la table cliquée
-    void loadTable(TableCulture* table);
+    void loadTable(TableCultureWidget* table);
+    void setTablesData(QVector<TableCultureData*>* data);
 
 signals:
     void backRequested(); // ← bouton retour → MainWindow revient au Dashboard
-    void deleteRequested(TableCulture* table);
-    void duplicateRequested(TableCulture* table);
+    void deleteRequested(TableCultureWidget* table);
+    void duplicateRequested(TableCultureData* table);
 
+private slots :
+    void exportPDF();
 
 private:
     void setupHeader(QVBoxLayout* layout);
@@ -46,7 +54,7 @@ private:
     void refreshInfos();
     void clearPotSelection();
 
-    TableCulture* m_table = nullptr; // table courante
+    TableCultureWidget* m_table = nullptr; // table courante
 
     // Widgets mis à jour par loadTable()
     QLabel*      m_titleLabel;
@@ -74,7 +82,7 @@ private:
 
     QVector<QPushButton*> m_etatButtons;
     QButtonGroup* m_etatGroup = nullptr;
-    PotWidget* m_currentPot = nullptr;
+    PotData* m_currentPot = nullptr;
     QMap<QPushButton*, EtatPot> m_buttonToEtat;
 
     QPushButton* m_btnOk = nullptr;
@@ -82,6 +90,7 @@ private:
     QPushButton* m_btnDanger = nullptr;
 
 
-    void showPotDetail(PotWidget *pot);
+    void showPotDetail(int index);
     void refreshPotPanel();
+    QVector<TableCultureData*>* m_tablesData = nullptr;
 };

@@ -1,40 +1,76 @@
 #pragma once
 
+#include "tableculturewidget.h"
+#include "tableculturedata.h"
+
 #include <QWidget>
 #include <QVector>
 
+
 class QGridLayout;
 class QVBoxLayout;
-class TableCulture;
+
 
 class TableSection : public QWidget
 {
     Q_OBJECT
 
 public:
+
     explicit TableSection(QWidget* parent = nullptr);
+
 
     int nombreTablesActives() const;
     int nombreTables() const;
+
     int nombrePotsActifs() const;
     int nombrePotsTotal() const;
 
-    void deleteTable(TableCulture* table);
-    void addTable(TableCulture* source = nullptr); // si source != nullptr → copie les pots et l'état
+
+    QVector<TableCultureData*>& tablesData();
+
 
 signals:
-    void tablesActivesChanged(int count);
+
+    void tableClicked(TableCultureWidget* table);
+
+    void tablesActivesChanged(int nombre);
     void potsActifsChanged(int actifs, int total);
-    void tableClicked(TableCulture* table);  // ← propagé depuis TableCulture
+
+
+
+public slots:
+
+    void addTable(TableCultureData* source = nullptr);
+    void deleteTable(TableCultureWidget* table);
+
+
+
 private slots:
+
     void onTableEtatChanged();
 
+
+
 private:
+
     void setupHeader(QVBoxLayout* layout);
     void setupScroll(QVBoxLayout* layout);
     void setupLegend(QVBoxLayout* layout);
 
-    QGridLayout*           m_tablesGrid;
-    QVector<TableCulture*> m_tables;
-    int m_nextTableIndex = 1; // ← compteur global, ne redescend jamais
+
+private:
+
+    QGridLayout* m_tablesGrid = nullptr;
+
+
+    QVector<TableCultureData*>
+        m_tablesData;
+
+
+    QVector<TableCultureWidget*>
+        m_tablesWidgets;
+
+
+    int m_nextTableIndex = 1;
 };

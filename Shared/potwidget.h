@@ -1,37 +1,54 @@
 #pragma once
 
+#include "potdata.h"
 #include "couleurconversion.h"
+
 #include <QPushButton>
+
 
 class PotWidget : public QPushButton
 {
     Q_OBJECT
-public:
-    explicit PotWidget(int numero, EtatPot etat = EtatPot::Inactif, QWidget* parent = nullptr);
 
+public:
+
+    explicit PotWidget(PotData& data, QWidget* parent = nullptr);
+
+
+    // Accès aux données
+    PotData& data();
+    const PotData& data() const;
+
+
+    // Raccourcis pratiques
     void setEtat(EtatPot etat);
     EtatPot etat() const;
 
-    QString nomPlante() const;
-    void setNomPlante(const QString& newNomPlante);
 
-    int numeroPot() const;
-    void setNumeroPot(int newNumeroPot);
+    QString nomPlante() const;
+    void setNomPlante(const QString& nom);
+
 
     QString datePlantation() const;
-    void setDatePlantation(const QString& newDatePlantation);
+    void setDatePlantation(const QString& date);
 
-    QString toString();
+
+    int numeroPot() const;
+    void setNumeroPot(int numero);
+
 
 signals:
+
     void etatChanged();
 
+
 private:
+
     void updateStyle();
     void updateTooltip();
 
-    int     m_numeroPot     = 0;
-    EtatPot m_etat          = EtatPot::Inactif;
-    QString m_nomPlante;
-    QString m_datePlantation;
+
+private:
+
+    PotData& m_data;
 };
