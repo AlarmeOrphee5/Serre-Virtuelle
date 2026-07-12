@@ -95,6 +95,8 @@ MainWindow::MainWindow(QWidget *parent)
     connect(m_tablesPage,   &TablesPage::duplicateRequested,
             m_tableSection, &TableSection::addTable);
 
+    connect(m_tablesPage,&TablesPage::tableUpdated,
+            m_tableSection,&TableSection::refreshTable);
     // Valeurs initiales
     m_topModulesBar->updateModule(
         0,

@@ -38,10 +38,10 @@ const PotData& PotWidget::data() const
 
 void PotWidget::setEtat(EtatPot etat)
 {
-    if (m_data.etat() == etat)
-        return;
-
-    m_data.setEtat(etat);
+    if (m_data.etat() != etat)
+    {
+        m_data.setEtat(etat);
+    }
 
     updateStyle();
     updateTooltip();

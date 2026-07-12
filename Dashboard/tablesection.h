@@ -43,6 +43,7 @@ public slots:
 
     void addTable(TableCultureData* source = nullptr);
     void deleteTable(TableCultureWidget* table);
+    void refreshTable(TableCultureWidget* table);
 
 
 

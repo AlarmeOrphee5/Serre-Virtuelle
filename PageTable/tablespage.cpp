@@ -311,9 +311,6 @@ void TablesPage::setupHeader(QVBoxLayout* layout)
         )");
         return b;
     };
-
-    //tl->addWidget(makeActionBtn("⧉", "Dupliquer"));
-    //tl->addWidget(makeActionBtn("⏸", "Désactiver"));
     m_toggleTableBtn = makeActionBtn("", "Init");
     QObject::connect(m_toggleTableBtn, &QPushButton::clicked, m_toggleTableBtn, [=](){
         qDebug() << QString("Bouton %1 appuyé").arg(m_toggleTableBtn->text());
@@ -627,6 +624,7 @@ QLabel#valueLabel {
 
                 refreshGrid();
                 refreshPotPanel();
+                emit tableUpdated(m_table);
             });
 
     detailsLayout->addStretch();
@@ -818,7 +816,7 @@ void TablesPage::exportPDF()
     if (PdfExporter::exporterTable( m_table->data(),chemin))
     {
         QMessageBox::information(
-            this,
+            window(),
             "Export terminé",
             "Le rapport PDF a été créé."
             );
@@ -826,7 +824,7 @@ void TablesPage::exportPDF()
     else
     {
         QMessageBox::warning(
-            this,
+            window(),
             "Erreur",
             "Impossible de créer le PDF."
             );

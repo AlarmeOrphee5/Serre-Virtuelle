@@ -55,7 +55,6 @@ void TableCultureWidget::refresh()
             m_data.pots()[i].etat()
             );
     }
-
     updateStyle();
 }
 

@@ -399,3 +399,12 @@ void TableSection::addTable(TableCultureData* source)
 
     onTableEtatChanged();
 }
+
+void TableSection::refreshTable(TableCultureWidget* table)
+{
+    if (!table)
+    {
+        return;
+    }
+    table->refresh();
+}

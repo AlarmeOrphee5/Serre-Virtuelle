@@ -76,11 +76,9 @@ signals:
     void etatChanged();
     void tableClicked(TableCultureWidget* self);
 
-
 private slots:
 
     void refreshPotCount();
-
 
 protected:
 

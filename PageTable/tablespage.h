@@ -40,6 +40,7 @@ signals:
     void backRequested(); // ← bouton retour → MainWindow revient au Dashboard
     void deleteRequested(TableCultureWidget* table);
     void duplicateRequested(TableCultureData* table);
+    void tableUpdated(TableCultureWidget* table);
 
 private slots :
     void exportPDF();

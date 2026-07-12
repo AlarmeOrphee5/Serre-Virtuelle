@@ -15,7 +15,6 @@ SOURCES += \
     Exporter/exportpdf.cpp \
     PageTable/tablespage.cpp \
     Shared/potdata.cpp \
-    Shared/tableculture.cpp \
     Shared/tableculturedata.cpp \
     Shared/tableculturewidget.cpp \
     main.cpp \
@@ -35,7 +34,6 @@ HEADERS += \
     Dashboard/legendbar.h \
     Dashboard/dashboardpage.h \
     Shared/potdata.h \
-    Shared/tableculture.h \
     Shared/tableculturedata.h \
     Shared/tableculturewidget.h \
     mainwindow.h \
