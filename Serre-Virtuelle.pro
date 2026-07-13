@@ -14,6 +14,10 @@ SOURCES += \
     Dashboard/dashboardpage.cpp \
     Exporter/exportpdf.cpp \
     PageTable/tablespage.cpp \
+    Settings/settingsmanager.cpp \
+    Settings/settingspage.cpp \
+    Shared/UI/theme.cpp \
+    Shared/UI/uigenerale.cpp \
     Shared/potdata.cpp \
     Shared/tableculturedata.cpp \
     Shared/tableculturewidget.cpp \
@@ -30,6 +34,10 @@ HEADERS += \
     Dashboard/cardwidget.h \
     Exporter/exportpdf.h \
     PageTable/tablespage.h \
+    Settings/settingsmanager.h \
+    Settings/settingspage.h \
+    Shared/UI/theme.h \
+    Shared/UI/uigenerale.h \
     Shared/couleurconversion.h \
     Dashboard/legendbar.h \
     Dashboard/dashboardpage.h \

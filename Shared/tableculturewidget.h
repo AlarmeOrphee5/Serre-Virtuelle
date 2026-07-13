@@ -92,12 +92,8 @@ private:
     void setupGrid(QVBoxLayout* mainLayout);
     void setupFooter(QVBoxLayout* mainLayout);
 
-
     PotWidget* potWidget(int index) const;
 
-
-
-private:
 
     TableCultureData& m_data;
 

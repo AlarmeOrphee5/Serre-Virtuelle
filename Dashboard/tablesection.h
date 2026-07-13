@@ -59,9 +59,6 @@ private:
     void setupScroll(QVBoxLayout* layout);
     void setupLegend(QVBoxLayout* layout);
 
-
-private:
-
     QGridLayout* m_tablesGrid = nullptr;
 
 

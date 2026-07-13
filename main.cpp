@@ -41,6 +41,8 @@ int main(int argc, char *argv[])
 )");
 
     a.setStyle("Fusion");
+    QCoreApplication::setOrganizationName("SerreVirtuelle");
+    QCoreApplication::setApplicationName("SerreVirtuelle");
     MainWindow w;
     w.show();
     return a.exec();

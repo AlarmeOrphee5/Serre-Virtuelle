@@ -2,6 +2,7 @@
 #include "topmodulebar.h"
 #include "tablesection.h"
 #include "rightpanel.h"
+#include "../Shared/UI/uigenerale.h"
 
 #include <QVBoxLayout>
 #include <QHBoxLayout>
@@ -12,6 +13,8 @@ DashboardPage::DashboardPage(QWidget* parent)
     : QWidget(parent)
 {
     setAttribute(Qt::WA_StyledBackground, true);
+
+    UIGenerale::applyPage(this);
 
     QVBoxLayout* layout = new QVBoxLayout(this);
     layout->setContentsMargins(20,25,20,20);
@@ -24,7 +27,8 @@ DashboardPage::DashboardPage(QWidget* parent)
 
     QWidget* bottomRow = new QWidget;
     bottomRow->setAttribute(Qt::WA_StyledBackground, true);
-    bottomRow->setStyleSheet("background:transparent;");
+    UIGenerale::applyTransparent(bottomRow);
+    //bottomRow->setStyleSheet("background:transparent;");
 
     QHBoxLayout* bottomLayout = new QHBoxLayout(bottomRow);
     bottomLayout->setContentsMargins(0,0,0,0);
@@ -53,17 +57,25 @@ void DashboardPage::setupHeader(QVBoxLayout* layout)
 {
     QFrame* header = new QFrame;
     header->setFrameShape(QFrame::NoFrame);
-    header->setStyleSheet("background:transparent;");
+    UIGenerale::applyTransparent(header);
 
     QVBoxLayout* headerLayout = new QVBoxLayout(header);
     headerLayout->setContentsMargins(0,0,0,10);
     headerLayout->setSpacing(4);
 
     QLabel* mainTitle = new QLabel("Dashboard");
-    mainTitle->setStyleSheet("color:white; font-size:28px; font-weight:700; background:transparent;");
+
+    UIGenerale::applyText(
+        mainTitle,
+        UIGenerale::TextStyle::PageTitle
+        );
 
     QLabel* subtitle = new QLabel("Vue d'ensemble de vos serres");
-    subtitle->setStyleSheet("color:#9aa4b2; font-size:13px; background:transparent;");
+
+    UIGenerale::applyText(
+        subtitle,
+        UIGenerale::TextStyle::Description
+        );
 
     headerLayout->addWidget(mainTitle);
     headerLayout->addWidget(subtitle);

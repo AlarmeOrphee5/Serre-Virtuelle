@@ -1,5 +1,6 @@
 #include "topmodulebar.h"
 #include "modulecard.h"
+#include "../Shared/UI/uigenerale.h"
 
 #include <QHBoxLayout>
 #include <QDebug>
@@ -8,7 +9,7 @@ TopModulesBar::TopModulesBar(QWidget* parent)
     : QFrame(parent)
 {
     setFrameShape(QFrame::NoFrame);
-    setStyleSheet("background:transparent;");
+    UIGenerale::applyTransparent(this);
     setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
 
     QHBoxLayout* layout = new QHBoxLayout(this);

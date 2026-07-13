@@ -5,6 +5,7 @@
 #include "tablesection.h"
 #include "topmodulebar.h"
 #include "tableculturewidget.h"
+#include "Settings/settingspage.h"
 
 #include <QWidget>
 #include <QHBoxLayout>
@@ -46,6 +47,15 @@ MainWindow::MainWindow(QWidget *parent)
     // TablesPage — créée une fois, rechargée via loadTable()
     m_tablesPage = new TablesPage;
     m_stack->addWidget(m_tablesPage); // index 1
+
+    // StatsPage temporaire
+    QWidget* statsPage = new QWidget;
+    m_stack->addWidget(statsPage); // index 2
+
+    // SettingsPage
+    SettingsPage* settingsPage = new SettingsPage;
+    settingsPage = new SettingsPage;
+    m_stack->addWidget(settingsPage); // index 3
 
     m_tablesPage->setTablesData(
         &m_tableSection->tablesData()
