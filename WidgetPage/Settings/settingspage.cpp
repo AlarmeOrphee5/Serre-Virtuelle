@@ -1,8 +1,9 @@
 #include "settingspage.h"
-#include "settingsmanager.h"
+#include "DataManager/Settings/settingsmanager.h"
 
-#include "cardwidget.h"
-#include "../shared/UI/uigenerale.h"
+#include "Core/Communs/cardwidget.h"
+#include "Core/UI/uigenerale.h"
+#include "Core/Communs/appinfo.h"
 
 #include <QVBoxLayout>
 #include <QHBoxLayout>
@@ -284,10 +285,20 @@ void SettingsPage::setupAbout()
 
     QLabel* info =
         new QLabel(
-            "Serre Virtuelle\n"
-            "Version 0.8\n"
-            "Qt 6"
+            QString(
+                "%1<br>"
+                "Version %2<br>"
+                "Qt %3<br><br>"
+                "Auteur : <a href=\"%4\">%5</a>"
+                )
+                .arg(AppInfo::name())
+                .arg(AppInfo::version())
+                .arg(AppInfo::qtVersion())
+                .arg(AppInfo::github())
+                .arg(AppInfo::autheur())
             );
+    info->setTextFormat(Qt::RichText);
+    info->setOpenExternalLinks(true);
 
     UIGenerale::applyText(
         info,

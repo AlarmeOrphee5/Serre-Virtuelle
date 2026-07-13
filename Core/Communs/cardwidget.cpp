@@ -1,6 +1,6 @@
 #include "cardwidget.h"
 
-#include "../Shared/UI/uigenerale.h"
+#include "Core/UI/uigenerale.h"
 
 #include <QVBoxLayout>
 

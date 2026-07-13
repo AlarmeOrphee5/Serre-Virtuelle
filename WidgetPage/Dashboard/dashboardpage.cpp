@@ -2,7 +2,7 @@
 #include "topmodulebar.h"
 #include "tablesection.h"
 #include "rightpanel.h"
-#include "../Shared/UI/uigenerale.h"
+#include "Core/UI/uigenerale.h"
 
 #include <QVBoxLayout>
 #include <QHBoxLayout>

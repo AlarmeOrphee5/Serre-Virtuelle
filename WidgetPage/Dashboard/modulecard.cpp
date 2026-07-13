@@ -1,6 +1,6 @@
 #include "modulecard.h"
-#include "../Shared/UI/uigenerale.h"
-#include "cardwidget.h"
+#include "Core/UI/uigenerale.h"
+#include "Core/Communs/cardwidget.h"
 
 #include <QVBoxLayout>
 #include <QLabel>

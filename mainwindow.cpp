@@ -1,11 +1,11 @@
 #include "mainwindow.h"
-#include "sidebar.h"
-#include "dashboardpage.h"
-#include "tablespage.h"
-#include "tablesection.h"
-#include "topmodulebar.h"
-#include "tableculturewidget.h"
-#include "Settings/settingspage.h"
+#include "WidgetPage/Sidebar/sidebar.h"
+#include "WidgetPage/Dashboard/dashboardpage.h"
+#include "WidgetPage/PageTable/tablespage.h"
+#include "WidgetPage/Dashboard/tablesection.h"
+#include "WidgetPage/Dashboard/topmodulebar.h"
+#include "WidgetPage/TableCulture/tableculturewidget.h"
+#include "WidgetPage/Settings/settingspage.h"
 
 #include <QWidget>
 #include <QHBoxLayout>

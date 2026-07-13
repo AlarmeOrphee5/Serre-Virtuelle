@@ -1,7 +1,7 @@
 #pragma once
 
-#include "potdata.h"
-#include "couleurconversion.h"
+#include "DataManager/Pot/potdata.h"
+#include "Core/Communs/couleurconversion.h"
 
 #include <QPushButton>
 

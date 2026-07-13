@@ -1,6 +1,6 @@
 #include "topmodulebar.h"
 #include "modulecard.h"
-#include "../Shared/UI/uigenerale.h"
+#include "Core/UI/uigenerale.h"
 
 #include <QHBoxLayout>
 #include <QDebug>

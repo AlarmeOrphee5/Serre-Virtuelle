@@ -1,5 +1,5 @@
 #include "rightpanel.h"
-#include "cardwidget.h"
+#include "Core/Communs/cardwidget.h"
 
 #include <QVBoxLayout>
 #include <QLabel>

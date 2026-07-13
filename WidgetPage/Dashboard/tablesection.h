@@ -1,7 +1,7 @@
 #pragma once
 
-#include "tableculturewidget.h"
-#include "tableculturedata.h"
+#include "WidgetPage/TableCulture/tableculturewidget.h"
+#include "DataManager/TableCulture/tableculturedata.h"
 
 #include <QWidget>
 #include <QVector>

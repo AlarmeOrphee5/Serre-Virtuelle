@@ -1,6 +1,6 @@
 #pragma once
 #include <QMainWindow>
-#include "tableculturewidget.h"
+#include "WidgetPage/TableCulture/tableculturewidget.h"
 
 class QStackedWidget;
 class TopModulesBar;

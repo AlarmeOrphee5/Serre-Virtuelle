@@ -1,7 +1,7 @@
 #pragma once
 
-#include "tableculturedata.h"
-#include "potwidget.h"
+#include "DataManager/TableCulture/tableculturedata.h"
+#include "WidgetPage/Pot/potwidget.h"
 
 #include <QWidget>
 #include <QMouseEvent>

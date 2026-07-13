@@ -1,6 +1,6 @@
 #pragma once
 
-#include "potdata.h"
+#include "DataManager/Pot/potdata.h"
 
 #include <QString>
 #include <QVector>

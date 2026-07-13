@@ -3,10 +3,10 @@
 #include <QWidget>
 #include <QPushButton>
 #include <QButtonGroup>
-#include "tableculturewidget.h"
-#include "potdata.h"
-#include "Exporter/exportpdf.h"
-#include "tableculturedata.h"
+#include "WidgetPage/TableCulture/tableculturewidget.h"
+#include "DataManager/Pot/potdata.h"
+#include "Core/Export/exportpdf.h"
+#include "DataManager/TableCulture/tableculturedata.h"
 
 #include <QFileDialog>
 #include <QMessageBox>

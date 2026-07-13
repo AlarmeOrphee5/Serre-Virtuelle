@@ -1,6 +1,6 @@
 #include "tablesection.h"
 
-#include "legendbar.h"
+#include "Core/Communs/legendbar.h"
 
 #include <QVBoxLayout>
 #include <QGridLayout>

@@ -1,6 +1,6 @@
 #pragma once
 
-#include "tableculturedata.h"
+#include "DataManager/TableCulture/tableculturedata.h"
 
 #include <QString>
 #include <QVector>

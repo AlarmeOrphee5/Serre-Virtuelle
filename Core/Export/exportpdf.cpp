@@ -1,6 +1,5 @@
-#include "Exporter/exportpdf.h"
-
-#include "couleurconversion.h"
+#include "exportpdf.h"
+#include "Core/Communs/couleurconversion.h"
 
 #include <QPdfWriter>
 #include <QPainter>

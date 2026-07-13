@@ -1,6 +1,6 @@
 #pragma once
 #include <QString>
-#include "couleurconversion.h"
+#include "Core/Communs/couleurconversion.h"
 
 class PotData
 {

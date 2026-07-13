@@ -1,5 +1,5 @@
 #include "tablespage.h"
-#include "couleurconversion.h"
+#include "Core/Communs/couleurconversion.h"
 
 #include <QVBoxLayout>
 #include <QHBoxLayout>
