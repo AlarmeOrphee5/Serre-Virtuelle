@@ -1,5 +1,6 @@
 #include "tablespage.h"
 #include "Core/Communs/couleurconversion.h"
+#include "Core/Database/tableculturerepository.h"
 
 #include <QVBoxLayout>
 #include <QHBoxLayout>
@@ -60,9 +61,13 @@ TablesPage::TablesPage(QWidget* parent)
 // loadTable — point d'entrée
 // =========================
 
-void TablesPage::loadTable(TableCultureWidget *table)
+void TablesPage::loadTable(TableCultureWidget* widget)
 {
-    m_table = table;
+    if(!widget)
+        return;
+
+    m_table = &widget->data();
+
     m_currentPot = nullptr;
 
     refreshInfos();
@@ -182,7 +187,7 @@ void TablesPage::refreshGrid()
     }
 
 
-    const QVector<PotData>& pots = m_table->data().pots();
+    const QVector<PotData>& pots = m_table->pots();
 
     for (int i = 0; i < pots.size() && i < 24; i++)
     {
@@ -614,17 +619,39 @@ QLabel#valueLabel {
                 if (!m_currentPot)
                     return;
 
+
                 QPushButton* btn = m_etatButtons.value(id);
+
                 if (!btn)
                     return;
 
-                EtatPot newEtat = m_buttonToEtat[btn];
+
+                EtatPot newEtat =
+                    m_buttonToEtat[btn];
+
 
                 m_currentPot->setEtat(newEtat);
 
+
+                PotRepository repository;
+
+
+                if(!repository.save(*m_currentPot, m_table->id()))
+                {
+                    qDebug()
+                    << "[BDD] Impossible de sauvegarder le pot";
+
+                    return;
+                }
+
+
                 refreshGrid();
                 refreshPotPanel();
-                emit tableUpdated(m_table);
+
+
+                emit tableUpdated(
+                    m_table->id()
+                    );
             });
 
     detailsLayout->addStretch();
@@ -731,7 +758,7 @@ QLabel#valueLabel {
     this->m_duplicateTableBtn = makeActBtn("⧉", "Dupliquer la table", true);
     QObject::connect(m_duplicateTableBtn, &QPushButton::clicked, m_duplicateTableBtn, [=](){
         qDebug() << QString("Bouton %1 appuyé").arg(m_duplicateTableBtn->text());
-        emit duplicateRequested(&m_table->data());
+        emit duplicateRequested(m_table);
         emit backRequested();
     });
     actl->addWidget(m_duplicateTableBtn);
@@ -740,7 +767,7 @@ QLabel#valueLabel {
     m_deleteTableBtn->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Preferred);
     QObject::connect(m_deleteTableBtn, &QPushButton::clicked, m_deleteTableBtn, [=](){
         qDebug() << QString("Bouton %1 appuyé").arg(m_deleteTableBtn->text());
-        emit deleteRequested(m_table);
+        emit deleteRequested(m_table->id());
         emit backRequested();  // ← retour automatique au dashboard
     });
     actl->addWidget(m_deleteTableBtn);
@@ -762,10 +789,20 @@ void TablesPage::toggleTableState()
     if (!m_table)
         return;
 
-    m_table->setEnabled(!m_table->estActive());
-    this->refreshGrid();
-    this->refreshInfos();
+    TableCultureRepository repository;
 
+    m_table->setActive(!m_table->estActive());
+
+    if(!repository.save(*m_table))
+    {
+        qDebug() << "[BDD] Impossible de sauvegarder la table";
+        return;
+    }
+
+    emit tableUpdated(m_table->id());
+
+    refreshGrid();
+    refreshInfos();
     refreshHeader();
     refreshPotPanel();
 }
@@ -776,7 +813,7 @@ void TablesPage::showPotDetail(int index)
         return;
 
 
-    QVector<PotData>& pots = m_table->data().pots();
+    QVector<PotData>& pots = m_table->pots();
 
 
     if (index < 0 || index >= pots.size())
@@ -803,23 +840,16 @@ void TablesPage::exportPDF()
 
     QString chemin = QFileDialog::getSaveFileName(
         this,
-        "Exporter le rapport PDF",
-        "Rapport_Serre_Virtuelle.pdf",
-        "Fichier PDF (*.pdf)"
-        );
+        "Exporter la table",
+        m_table->name() + ".pdf",
+        "PDF (*.pdf)");
 
 
-    if (chemin.isEmpty())
-        return;
-
-
-    if (PdfExporter::exporterTable( m_table->data(),chemin))
+    if(!chemin.isEmpty())
     {
-        QMessageBox::information(
-            window(),
-            "Export terminé",
-            "Le rapport PDF a été créé."
-            );
+        PdfExporter::exporterTable(
+            *m_table,
+            chemin);
     }
     else
     {

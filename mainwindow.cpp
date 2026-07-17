@@ -12,7 +12,7 @@
 #include <QStackedWidget>
 
 MainWindow::MainWindow(QWidget *parent)
-    : QMainWindow(parent)
+        : QMainWindow(parent)
 {
     resize(1400, 900);
 
@@ -99,14 +99,21 @@ MainWindow::MainWindow(QWidget *parent)
                     );
             });
 
-    connect(m_tablesPage,  &TablesPage::deleteRequested,
-            m_tableSection, &TableSection::deleteTable);
+    connect(m_tablesPage,
+            &TablesPage::deleteRequested,m_tableSection,
+            &TableSection::deleteTable);
+
+    connect(m_tablesPage,
+            &TablesPage::tableUpdated,m_tableSection,
+            &TableSection::refreshTable);
+
+    /*connect(m_tablesPage,
+            &TablesPage::duplicateRequested,m_tableSection,
+            &TableSection::duplicateTable);*/
 
     connect(m_tablesPage,   &TablesPage::duplicateRequested,
             m_tableSection, &TableSection::addTable);
 
-    connect(m_tablesPage,&TablesPage::tableUpdated,
-            m_tableSection,&TableSection::refreshTable);
     // Valeurs initiales
     m_topModulesBar->updateModule(
         0,

@@ -6,7 +6,6 @@
 #include <QWidget>
 #include <QMouseEvent>
 
-
 class QLabel;
 class QGridLayout;
 class QVBoxLayout;
@@ -22,68 +21,41 @@ public:
     explicit TableCultureWidget(TableCultureData& data,
                                 QWidget *parent = nullptr);
 
-
+    // Active/désactive la table (avec randomisation)
     void setEnabled(bool etat);
 
+    bool estActive() const { return m_data.estActive(); }
+    int  nombrePots() const { return m_data.nombrePots(); }
+    int  nombrePotsActifs() const;
 
-    bool estActive() const
-    {
-        return m_data.estActive();
-    }
-
-
-    int nombrePots() const
-    {
-        return m_data.nombrePots();
-    }
-
-
-    int nombrePotsActifs() const;
-
-
-    void updateStyle();
+    // Relit m_data et met à jour tous les widgets
     void refresh();
 
+    // Met à jour uniquement le style visuel (carte + labels)
+    void updateStyle();
 
     // Accès données
-    TableCultureData& data()
-    {
-        return m_data;
-    }
+    TableCultureData& data() const { return m_data; }
 
+    QString name() const { return m_data.name(); }
 
-    const TableCultureData& data() const
-    {
-        return m_data;
-    }
+    QVector<PotWidget*> potWidgets() const { return m_potWidgets; }
 
-
-    // Compatibilité Dashboard / Pages
-    QString name() const
-    {
-        return m_data.name();
-    }
-
-
-    QVector<PotWidget*> potWidgets() const
-    {
-        return m_potWidgets;
-    }
-
+    PotWidget* potWidget(int index) const;
 
 signals:
 
     void etatChanged();
     void tableClicked(TableCultureWidget* self);
-
-private slots:
-
-    void refreshPotCount();
+    void potClicked(PotWidget* pot);       // ← émis quand un pot est cliqué
 
 protected:
 
     void mousePressEvent(QMouseEvent* e) override;
 
+private slots:
+
+    void refreshPotCount();
 
 private:
 
@@ -92,23 +64,14 @@ private:
     void setupGrid(QVBoxLayout* mainLayout);
     void setupFooter(QVBoxLayout* mainLayout);
 
-    PotWidget* potWidget(int index) const;
-
-
     TableCultureData& m_data;
 
-
     QWidget* m_card;
+    QFrame*  m_statusDot;
+    QLabel*  m_statusLabel;
+    QLabel*  m_potsLabel;
+    QLabel*  m_waterLabel;
 
-    QFrame* m_statusDot;
-
-    QLabel* m_statusLabel;
-    QLabel* m_potsLabel;
-    QLabel* m_waterLabel;
-
-
-    QGridLayout* m_gridLayout;
-
-
+    QGridLayout*        m_gridLayout;
     QVector<PotWidget*> m_potWidgets;
 };

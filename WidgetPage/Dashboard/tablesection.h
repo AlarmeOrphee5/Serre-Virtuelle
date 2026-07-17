@@ -28,10 +28,13 @@ public:
 
 
     QVector<TableCultureData*>& tablesData();
+    void refreshTables();
 
 
 signals:
-
+    void deleteRequested(int id);
+    void duplicateRequested(int id);
+    void tableUpdated(int id);
     void tableClicked(TableCultureWidget* table);
 
     void tablesActivesChanged(int nombre);
@@ -42,22 +45,19 @@ signals:
 public slots:
 
     void addTable(TableCultureData* source = nullptr);
-    void deleteTable(TableCultureWidget* table);
-    void refreshTable(TableCultureWidget* table);
-
-
+    void deleteTable(int id);
+    void refreshTable(int id);
 
 private slots:
 
     void onTableEtatChanged();
-
-
 
 private:
 
     void setupHeader(QVBoxLayout* layout);
     void setupScroll(QVBoxLayout* layout);
     void setupLegend(QVBoxLayout* layout);
+    bool removeByTableId(int tableId);
 
     QGridLayout* m_tablesGrid = nullptr;
 

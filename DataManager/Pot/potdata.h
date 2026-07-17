@@ -29,6 +29,9 @@ public:
     QString datePlantation() const;
     void setDatePlantation(const QString& date);
 
+    int id() const;
+    void setId(int id);
+
     QString toString() const;
 
 private:
@@ -36,6 +39,7 @@ private:
     int m_numeroPot = 0;
 
     EtatPot m_etat = EtatPot::Inactif;
+    int m_id = -1;
 
     QString m_nomPlante;
     QString m_datePlantation;

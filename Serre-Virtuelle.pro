@@ -1,4 +1,4 @@
-QT += core gui widgets network
+QT += core gui widgets network sql
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
@@ -12,6 +12,9 @@ SOURCES += \
     Core/Communs/appinfo.cpp \
     Core/Communs/cardwidget.cpp \
     Core/Communs/legendbar.cpp \
+    Core/Database/databasemanager.cpp \
+    Core/Database/potrepository.cpp \
+    Core/Database/tableculturerepository.cpp \
     Core/Export/exportpdf.cpp \
     Core/UI/theme.cpp \
     Core/UI/uigenerale.cpp \
@@ -36,6 +39,9 @@ HEADERS += \
     Core/Communs/cardwidget.h \
     Core/Communs/couleurconversion.h \
     Core/Communs/legendbar.h \
+    Core/Database/databasemanager.h \
+    Core/Database/potrepository.h \
+    Core/Database/tableculturerepository.h \
     Core/Export/exportpdf.h \
     Core/UI/theme.h \
     Core/UI/uigenerale.h \

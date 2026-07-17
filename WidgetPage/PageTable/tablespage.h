@@ -38,9 +38,9 @@ public:
 
 signals:
     void backRequested(); // ← bouton retour → MainWindow revient au Dashboard
-    void deleteRequested(TableCultureWidget* table);
+    void deleteRequested(int id);
     void duplicateRequested(TableCultureData* table);
-    void tableUpdated(TableCultureWidget* table);
+    void tableUpdated(int id);
 
 private slots :
     void exportPDF();
@@ -55,7 +55,7 @@ private:
     void refreshInfos();
     void clearPotSelection();
 
-    TableCultureWidget* m_table = nullptr; // table courante
+    TableCultureData* m_table = nullptr;
 
     // Widgets mis à jour par loadTable()
     QLabel*      m_titleLabel;

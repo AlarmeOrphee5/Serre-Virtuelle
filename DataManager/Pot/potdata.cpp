@@ -23,6 +23,11 @@ void PotData::setNumeroPot(int numero)
     m_numeroPot = numero;
 }
 
+void PotData::setId(int numero)
+{
+    m_id = numero;
+}
+
 
 //---------------------------------
 // Etat
@@ -69,6 +74,11 @@ QString PotData::datePlantation() const
 void PotData::setDatePlantation(const QString& date)
 {
     m_datePlantation = date;
+}
+
+int PotData::id() const
+{
+    return m_id;
 }
 
 QString PotData::toString() const

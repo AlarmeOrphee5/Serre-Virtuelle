@@ -1,4 +1,12 @@
 #include "mainwindow.h"
+#include "Core/Database/databasemanager.h"
+
+#include "Core/Database/tableculturerepository.h"
+#include "DataManager/TableCulture/tableculturedata.h"
+#include "Core/Database/potrepository.h"
+
+#include <QDateTime>
+#include <QDebug>
 
 #include <QApplication>
 
@@ -40,10 +48,23 @@ int main(int argc, char *argv[])
     }
 )");
 
+    QString dbPath =
+        QCoreApplication::applicationDirPath()
+        + "/serre.db";
+
+    if (!DatabaseManager::getInstance().initialize(dbPath))
+    {
+        return -1;
+    }
+
     a.setStyle("Fusion");
     QCoreApplication::setOrganizationName("SerreVirtuelle");
     QCoreApplication::setApplicationName("SerreVirtuelle");
     MainWindow w;
     w.show();
-    return a.exec();
+    int result = a.exec();
+
+    DatabaseManager::getInstance().close();
+
+    return result;
 }

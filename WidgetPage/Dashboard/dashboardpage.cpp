@@ -105,7 +105,7 @@ void DashboardPage::setupConnections()
     connect(m_rightPanel, &RightPanel::ajouterTableClicked,
             m_tableSection, [this]() {
                 m_tableSection->addTable(nullptr);
-            });
+    });
 
     connect(m_rightPanel,
             &RightPanel::exportSerreRequested,

@@ -11,7 +11,7 @@ QString AppInfo::name()
 
 QString AppInfo::version()
 {
-    return "0.2.5.1";
+    return "0.3.0.0";
 }
 
 
